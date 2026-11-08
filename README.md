@@ -1,9 +1,10 @@
-# rag_content_engine
-# Self-Evaluating Lesson Content Generator
+# Self-Evaluating RAG Content Engine (Local/Free Edition)
 
 **Assessment Deliverable:** GenAI Engineer – Content Systems Take-Home Assessment
 **Target Learner:** 12th Grade Pass Student from India (Non-English Background, No Prior Coding Experience)
 **Core Paradigm:** Autonomous Multi-Agent Feedback Loop with 6 Hard Pass/Fail Rubric Checkpoints
+
+This is a multi-agent AI educational content generator that runs completely locally. It uses LangGraph to orchestrate a pipeline where an AI generates a lesson, and a strict AI Evaluator grades it against a 6-point rubric. If it fails, the pipeline automatically forces the AI to revise and regenerate until it passes.
 
 ## 1. System Architecture & Design Choices
 
@@ -41,32 +42,31 @@
                          │ Persistent Memory │
                          │ (SQLite / JSON)   │
                          └───────────────────┘
-```
+ ``` 
 
-# Key Design Choices & Trade-offs
-                         
-1.Why LangGraph over Linear Chains / Vanilla Loops? 
+## Key Design Choices & Trade-offs
 
-  -Explicit Cyclic State Machine: Evaluation and conditional regeneration require stateful branching. LangGraph guarantees       deterministic edge routing.  
+1. Why LangGraph over Linear Chains / Vanilla Loops?
 
-  -State Transparency: Every iteration preserves previous revisions, diffs, and checkpoint scores in the state graph.
+Explicit Cyclic State Machine: Evaluation and conditional regeneration require stateful branching. LangGraph guarantees deterministic edge routing.
 
-  -Guaranteed Termination: A strict retry_count <= MAX_RETRIES check prevents infinite loops and uncontrolled API cost.
+State Transparency: Every iteration preserves previous revisions, diffs, and checkpoint scores in the state graph.
 
-2.Hard Pass/Fail Rubric (No Partial Credit):
+Guaranteed Termination: A strict retry_count <= MAX_RETRIES check prevents infinite loops.
 
-  -Partial scores (e.g., 3.5/5) introduce ambiguity into automated shipping decisions. 
+2. Hard Pass/Fail Rubric (No Partial Credit):
 
-  -We enforce 6 strict Boolean checkpoints: grounding_accuracy, persona_language, pedagogical_analogy, zero_unexplained_jargon, core_coverage, and pedagogical_flow. 
+Partial scores (e.g., 3.5/5) introduce ambiguity into automated shipping decisions.
 
-3.Persistent Memory & Self-Evolution:  
+We enforce 6 strict Boolean checkpoints: grounding_accuracy, persona_language, pedagogical_analogy, zero_unexplained_jargon, core_coverage, and pedagogical_flow.
 
-  -PersistentFailureMemory logs failure types across historical runs. 
+3. Persistent Memory & Self-Evolution:
 
-  -Common failure modes are dynamically pulled into the system prompt as negative constraints ("Anti-patterns learned from past runs"), making the system self-evolving.
+PersistentFailureMemory logs failure types across historical runs.
 
-## 2. Project Directory Structure
+Common failure modes are dynamically pulled into the system prompt as negative constraints ("Anti-patterns learned from past runs"), making the system self-evolving. 
 
+2. Project Directory Structure
 rag_content_engine/
 ├── requirements.txt
 ├── schemas.py
@@ -74,39 +74,35 @@ rag_content_engine/
 ├── evaluator.py
 ├── generator.py
 ├── graph.py
+├── model_factory.py
 ├── run_pipeline.py
 └── README.md
 
-## 3. How to Run Locally
+3. Tech Stack
+Framework: LangGraph & LangChain
 
-```bash
+LLM Provider: Local Execution via Ollama (or free cloud via Groq)
 
-# 1. Clone repository
-git clone <your-github-repo-url>
-cd rag-content-engine
+Model: Llama 3.1 (8B)
 
-# 2. Setup virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+4. Setup Instructions
+ 
+Download and install Ollama.
 
-# 3. Install dependencies
-pip install -r requirements.txt
+Pull the model in your terminal:ollama run llama3.1:8b
 
-# 4. Set OpenAI API Key
-export OPENAI_API_KEY="your-api-key-here"
+Install Python dependencies:pip install -r requirements.txt
 
-# 5. Run Standard Generation (Zero-error path)
-python run_pipeline.py
+Set your environment variables:
 
-# 6. Run Deliberate Error Catch & Auto-Remediation Test
-python run_pipeline.py test_error
+Windows (PowerShell):$env:LLM_PROVIDER="ollama"$env:OLLAMA_MODEL="llama3.1:8b"
 
-```
+Run the pipeline:python run_pipeline.py
 
-## 4. Engineering Trade-offs & Production Considerations
 
-  -Model Choice: Evaluator utilizes temperature = 0.0 with structured outputs for strict adherence, while the Generator utilizes temperature = 0.7 for creative pedagogical phrasing.
+5. Engineering Trade-offs & Production Considerations
+Model Choice: Evaluator utilizes temperature = 0.0 with structured outputs for strict adherence, while the Generator utilizes temperature = 0.7 for creative pedagogical phrasing.
 
-  -Cost vs. Quality: The pipeline uses two-stage evaluation (fast deterministic Python regex/Flesch-Kincaid check first, LLM judge second).
+Cost vs. Quality: The pipeline uses two-stage evaluation (fast deterministic Python regex/Flesch-Kincaid check first, LLM judge second).
 
-  -Infinite loop guardrail: A strict max_retries = 2 hard cap is enforced.
+Infinite loop guardrail: A strict max_retries = 2 hard cap is enforced.
