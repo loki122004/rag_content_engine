@@ -8,6 +8,8 @@ from graph import ContentPipeline
 
 console = Console()
 
+
+
 def run_test(deliberate_error=None):
     console.print(Panel(
         f"[bold cyan]Running Self-Evaluating Lesson Generator[/bold cyan]\n"
@@ -22,9 +24,9 @@ def run_test(deliberate_error=None):
         deliberate_error=deliberate_error
     )
 
-    if result.rejection_history:
+    if result.get("rejection_history"):
         console.print("\n[bold red]─── REJECTION AUDIT LOG ───[/bold red]")
-        for record in result.rejection_history:
+        for record in result["rejection_history"]:
             table = Table(title=f"Attempt #{record.attempt_number} Failed Checks")
             table.add_column("Checkpoint", style="red bold")
             table.add_column("Failure Reason", style="white")
@@ -36,15 +38,15 @@ def run_test(deliberate_error=None):
     else:
         console.print("[green]✓ First attempt passed all rubric checkpoints with zero rejections![/green]")
 
-    console.print(f"\n[bold]Final Status:[/bold] [green]{result.status}[/green] (Attempt #{result.current_attempt})")
+    console.print(f"\n[bold]Final Status:[/bold] [green]{result.get('status')}[/green] (Attempt #{result.get('current_attempt')})")
 
-    if result.latest_evaluation:
+    if result.get("latest_evaluation"):
         eval_table = Table(title="Final Rubric Evaluation")
         eval_table.add_column("Checkpoint", style="cyan")
         eval_table.add_column("Status", justify="center")
         eval_table.add_column("Reason", style="dim")
 
-        for cp in result.latest_evaluation.checkpoints:
+        for cp in result["latest_evaluation"].checkpoints:
             status_str = "[green]PASS[/green]" if cp.passed else "[red]FAIL[/red]"
             eval_table.add_row(cp.name, status_str, cp.reason)
         console.print(eval_table)
