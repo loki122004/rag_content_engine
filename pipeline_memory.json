@@ -1,1 +1,28 @@
-{"failure_counts": {}, "lessons_shipped": 0, "anti_patterns": []}
+{
+  "failure_counts": {
+    "teaches_by_example": 1,
+    "core_coverage": 3,
+    "coherent_teaching_flow": 4,
+    "beginner_friendly_language": 3,
+    "grounding_accuracy": 2,
+    "zero_unexplained_jargon": 2
+  },
+  "lessons_shipped": 0,
+  "anti_patterns": [
+    "While the open-book vs closed-book exam analogy is used, it fails to explicitly map the analogy components directly to the technical terms: External Documents (the textbook), Retriever (flipping/searching the index), and Generator (the student writing the answer).",
+    "Checkpoint requires explaining 4 specific operational steps under 'How does it work?': Step 1: Store/Index, Step 2: Search/Retrieve, Step 3: Augment/Prompt, Step 4: Generate. The text omits the initial Store/Index step as a formal step and only presents 3 steps.",
+    "The required progression specifies: Hook/Problem -> Relatable Analogy -> Architecture/Steps -> Practical Example -> Quiz. The lesson ends abruptly at the summary without including a practice Quiz.",
+    "Language is accessible to a non-English-medium 12th-grade pass student, using short sentences, relatable Indian cultural references (kirana store, board exam), and meeting the readability criteria. [Automated Metric Alert: Language complexity too high: Flesch-Kincaid Grade is 8.5. Target is <= 8.5.]",
+    "Fails the required flow sequence: the lesson lacks the required Quiz section at the end (Progression requires Hook/Problem -> Relatable Analogy -> Architecture/Steps -> Practical Example -> Quiz).",
+    "The lesson makes false technical claims, such as 'RAG uses your open-book exam skills to help AI generate accurate and relevant answers.' This is an oversimplification and not entirely accurate.",
+    "The Flesch-Kincaid Grade is 9.6, which is above the target of <= 8.5. [Automated Metric Alert: Language complexity too high: Flesch-Kincaid Grade is 9.6. Target is <= 8.5.]",
+    "The lesson does not define 'LLM' and 'Embeddings' immediately upon first appearance.",
+    "The lesson does not cover 'Why it matters (outdated data + hallucinations)' and 'How it works (4 steps)' comprehensively.",
+    "The lesson does not follow a smooth progression: Hook -> Analogy -> 4 Steps -> Practical Example -> Quiz. The 'Why is RAG Important?' section disrupts the flow.",
+    "The lesson makes false technical claims, such as 'RAG consists of three key components' when it actually consists of four steps.",
+    "The Flesch-Kincaid Grade is 10.8, which is above the target of <= 8.5. [Automated Metric Alert: Language complexity too high: Flesch-Kincaid Grade is 10.8. Target is <= 8.5.]",
+    "The lesson does not define 'Hallucinations' immediately upon first appearance.",
+    "The lesson does not cover 'Why it matters' thoroughly, and the explanation of 'How it works' is incomplete.",
+    "The lesson does not follow a smooth progression: Hook -> Analogy -> 4 Steps -> Practical Example -> Quiz. The 'Why Does RAG Matter' section disrupts the flow."
+  ]
+}
