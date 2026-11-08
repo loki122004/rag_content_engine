@@ -1,13 +1,9 @@
-"""Persistent memory that tracks past rejections and self-evolves prompts."""
 import json
 import os
 from collections import Counter
 from typing import List
 
-
 class PersistentFailureMemory:
-    """Stores recurring failure patterns to enrich generator instructions over time."""
-
     def __init__(self, storage_path: str = "pipeline_memory.json"):
         self.storage_path = storage_path
         self._ensure_storage()
@@ -29,7 +25,6 @@ class PersistentFailureMemory:
         for reason in reasons:
             if reason not in data["anti_patterns"]:
                 data["anti_patterns"].append(reason)
-        # Keep top 15 most recent
         data["anti_patterns"] = data["anti_patterns"][-15:]
 
         with open(self.storage_path, "w", encoding="utf-8") as f:
