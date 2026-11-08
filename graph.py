@@ -7,9 +7,9 @@ from memory import PersistentFailureMemory
 
 
 class ContentPipeline:
-    def __init__(self, model_name: str = "gpt-4o"):
-        self.generator = LessonGenerator(model_name=model_name)
-        self.evaluator = RubricEvaluator(model_name=model_name)
+    def __init__(self):
+        self.generator = LessonGenerator()
+        self.evaluator = RubricEvaluator()
         self.memory = PersistentFailureMemory()
         self.workflow = self._build_graph()
 
@@ -37,13 +37,16 @@ class ContentPipeline:
         return graph.compile()
 
     def _node_generate(self, state: PipelineState) -> dict:
+        print("⏳ [Step 1] Generating initial lesson draft...", flush=True)
         lesson = self.generator.generate(
             topic=state.topic,
             deliberate_error=state.injected_error
         )
+       
         return {"current_lesson": lesson, "status": "EVALUATING"}
 
     def _node_evaluate(self, state: PipelineState) -> dict:
+        print("🔍 [Step 2] Evaluating draft against 6 checkpoints...", flush=True)
         evaluation = self.evaluator.evaluate(state.current_lesson)
 
         if evaluation.overall_passed:
@@ -73,6 +76,7 @@ class ContentPipeline:
             }
 
     def _node_revise(self, state: PipelineState) -> dict:
+        print("🔧 [Step 3] Fixing failed checkpoints and regenerating...", flush=True)
         revised_lesson = self.generator.regenerate(
             topic=state.topic,
             current_lesson=state.current_lesson,
